@@ -1,0 +1,6 @@
+/.env
+/node_modules/
+/.idea/jsLibraryMappings.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/.gitignore
