@@ -22,6 +22,15 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    terms:{
+       type: Boolean,
+       required: true
+    } ,
     is_active: {
         type: Boolean,
         default: true,
