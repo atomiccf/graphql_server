@@ -1,6 +1,7 @@
 const User = require('../models/users')
-const { createJWT, createRefreshToken } = require('../service/JWT_service')
+const { createJWT, createRefreshToken, verifyGoogleToken } = require('../service/JWT_service')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto');
 
 module.exports = {
     Query: {
@@ -22,31 +23,48 @@ module.exports = {
         }
     },
     Mutation: {
-        async createUser(_, {userInput: {username, password, first_name, last_name}}) {
+        async createUser(_, {userInput: {username, password, first_name, last_name, email ,terms}}, context) {
+            const { res } = context;
             try {
-
                 const existingUser = await User.findOne({ username });
+                const existingEmail = await User.findOne({ email });
+                if (!terms) {
+                    throw new Error('Terms must be accepted');
+                }
+
+
                 if (existingUser) {
                     throw new Error('Username already exists');
+                }
+
+                if (existingEmail) {
+                    throw new Error('Email already exists');
                 }
 
                 const newUser = new User({
                     username,
                     password,
+                    email: email,
                     first_name,
                     last_name,
-                    role: 'admin',
+                    terms,
+                    role: 'user',
                     _created_at: new Date().toISOString(),
                 });
 
-                const res = await newUser.save();
-                return {
-                    id: res.id,
-                    ...res._doc,
-                };
+                const result = await newUser.save();
+                console.log('resultUser',result)
+                const accessToken = createJWT({ username, userId: result._id });
+                const refreshToken = createRefreshToken({ username, userId: result._id });
+                res.cookie('refresh_token',refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 86400000 });
+
+                return { accessToken: accessToken };
             } catch (e) {
-                console.error('Error creating user:', e.message);
-                throw new Error('Error creating user');
+                console.error('Error creating user:', e);
+                if (e instanceof Error) {
+                    throw new Error(e.message);
+                }
+                throw new Error('Unexpected error while creating user');
             }
         },
         async loginUser(_, { loginInput }, context) {
@@ -70,6 +88,49 @@ module.exports = {
                 throw new Error('Internal server error');
             }
         },
+
+        async googleAuth(_,{googleAuthInput},context){
+           if(!googleAuthInput) return null
+            console.log('googleAuthInput',googleAuthInput)
+            const { res } = context;
+            try {
+                const user = await verifyGoogleToken(googleAuthInput.idToken);
+                if (!user) throw new Error('Invalid Google token');
+                const first_name = user.given_name  || '';
+                const last_name = user.family_name  || '';
+
+                let existingUser = await User.findOne({ username: user.sub });
+                if(!existingUser){
+                    const generatedPassword = crypto.randomBytes(32).toString('hex');
+                    const newUser = new User({
+                        username:user.sub,
+                        password:generatedPassword,
+                        email: user.email,
+                        first_name:first_name,
+                        last_name:last_name,
+                        terms:true,
+                        role: 'user',
+                        _created_at: new Date().toISOString(),
+                    });
+
+                    existingUser = await newUser.save();
+                }
+
+                const accessToken = createJWT({ username:existingUser.username, userId:existingUser._id });
+                const refreshToken = createRefreshToken({ username:existingUser.username, userId:existingUser._id });
+                res.cookie('refresh_token',refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 86400000 });
+
+                return { accessToken: accessToken };
+            }catch (e) {
+                console.error('Error creating user:', e);
+                if (e instanceof Error) {
+                    throw new Error(e.message);
+                }
+                throw new Error('Unexpected error while creating user');
+            }
+
+        },
+
         async refreshToken(_, __, context) {
             try {
                 const { req } = context

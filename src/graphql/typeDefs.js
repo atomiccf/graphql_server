@@ -6,6 +6,8 @@ module.exports = gql`
     first_name: String!
     last_name: String!
     password: String!
+    email: String!
+    terms: Boolean!
     is_active: Boolean!
     is_deleted: Boolean!
     _updated_at: String!
@@ -18,6 +20,12 @@ module.exports = gql`
     password: String!
     first_name: String!
     last_name: String!
+    email: String!
+    terms: Boolean!
+  }
+  
+  input GoogleAuthInput {
+    idToken: String!
   }
   
   input LoginInput {
@@ -31,8 +39,9 @@ module.exports = gql`
   }
   
   type Mutation {
-    createUser(userInput: UserInput!): User!
+    createUser(userInput: UserInput!): AuthPayload!
     loginUser(loginInput: LoginInput!): AuthPayload!
+    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!  
     refreshToken: AuthPayload!
   }
   
