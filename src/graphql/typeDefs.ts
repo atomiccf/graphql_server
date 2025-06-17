@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server'
+const { gql } = require('apollo-server')
 
 export const typeDefs = gql`
   type User {   
@@ -6,21 +6,26 @@ export const typeDefs = gql`
     first_name: String!
     last_name: String!
     password: String!
+    email: String!
+    terms: Boolean!
     is_active: Boolean!
     is_deleted: Boolean!
-    terms: Boolean!
     _updated_at: String!
     _created_at: String!
     role: String!
   }
   
   input UserInput {
-    email: String!
     username: String!
     password: String!
     first_name: String!
     last_name: String!
-    terms: Boolean!  
+    email: String!
+    terms: Boolean!
+  }
+  
+  input GoogleAuthInput {
+    idToken: String!
   }
   
   input LoginInput {
@@ -34,8 +39,9 @@ export const typeDefs = gql`
   }
   
   type Mutation {
-    createUser(userInput: UserInput!): User!
+    createUser(userInput: UserInput!): AuthPayload!
     loginUser(loginInput: LoginInput!): AuthPayload!
+    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!  
     refreshToken: AuthPayload!
   }
   

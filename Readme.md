@@ -1,5 +1,10 @@
-## GraphQL Server for ToDo App
+## GraphQL ToDo Server
 
-## Description
+## 📋 Description
+This project is a fully functional GraphQL server for a ToDo application, developed with the goal of learning GraphQL principles on the server side. The server provides an API for creating, reading, updating, and deleting tasks using a modern technology stack.
 
-This is a GraphQL server for a ToDo app. This server was created for study purposes. The main goal of this project is to learn how GraphQL works on server side.  It uses MongoDB as the database and Apollo Server as the GraphQL server in studies purposes.
+## 🛠 Tech Stack
+* GraphQL - Query language for APIs
+* Apollo Server - GraphQL server for Node.js
+* MongoDB - NoSQL database for data storage
+* Node.js - JavaScript runtime environment

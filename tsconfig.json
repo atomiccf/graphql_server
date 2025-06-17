@@ -18,7 +18,9 @@
     }
   },
   "ts-node": {
+    "logError": true,
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

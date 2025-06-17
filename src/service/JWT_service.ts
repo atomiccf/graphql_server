@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 
 export interface UserData {
     userId: string;
@@ -33,5 +34,26 @@ export function createRefreshToken(userData: UserData): string | undefined {
     } catch (e) {
         console.error("Error generating JWT:", e);
         return undefined;
+    }
+
+}
+
+export async function verifyGoogleToken(token:string) {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+    if (!token) return null;
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+        return payload;
+
+    } catch (e) {
+        console.error("Error verifying Google ID token:", e);
+        return null;
     }
 }

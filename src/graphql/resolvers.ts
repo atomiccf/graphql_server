@@ -1,13 +1,19 @@
 import User from 'models/users'
-import { createJWT, createRefreshToken } from 'service/JWT_service'
+import { createJWT, createRefreshToken, verifyGoogleToken } from 'service/JWT_service'
 import jwt, {JwtPayload} from 'jsonwebtoken'
+import crypto from 'crypto'
 
 interface userInput {
+    email: string,
     username: string,
     password: string,
     first_name: string,
     last_name: string,
     terms: boolean
+}
+
+interface googleAuthInput {
+    idToken: string
 }
 
 interface loginInput {
@@ -53,7 +59,7 @@ export const resolvers = {
     Mutation: {
         async createUser(
             _:unknown,
-            {userInput: {username, password, first_name, last_name, terms}}: { userInput: userInput },
+            {userInput: {username, password, first_name, last_name, terms, email }}: { userInput: userInput },
             context:GraphQLContext
         ) {
             try {
@@ -65,6 +71,7 @@ export const resolvers = {
                 }
 
                 const newUser = new User({
+                    email,
                     username,
                     password,
                     first_name,
@@ -147,6 +154,58 @@ export const resolvers = {
                 console.error("Error during token refresh:", e);
                 throw new Error('Internal server error');
             }
-        }
+        },
+
+        async googleAuth(
+            _:unknown,
+            { googleAuthInput }:{ googleAuthInput: googleAuthInput },
+            context:GraphQLContext
+        ){
+            if(!googleAuthInput) return null
+
+            const { res } = context;
+            try {
+                const user = await verifyGoogleToken(googleAuthInput.idToken);
+                if (!user) throw new Error('Invalid Google token');
+                const first_name = user.given_name  || '';
+                const last_name = user.family_name  || '';
+
+                let existingUser = await User.findOne({ username: user.sub });
+                if(!existingUser){
+                    const generatedPassword = crypto.randomBytes(32).toString('hex');
+                    const newUser = new User({
+                        username:user.sub,
+                        password:generatedPassword,
+                        email: user.email,
+                        first_name:first_name,
+                        last_name:last_name,
+                        terms:true,
+                        role: 'user',
+                        _created_at: new Date().toISOString(),
+                    });
+
+                    existingUser = await newUser.save();
+                }
+
+                const accessToken = createJWT({ username:existingUser.username, userId:existingUser._id } as { username: string; userId: string });
+                const refreshToken = createRefreshToken({ username:existingUser.username, userId:existingUser._id } as { username: string; userId: string });
+
+                if (!refreshToken) {
+                    throw new Error('Failed to create refresh token');
+                }
+
+                res.cookie('refresh_token',refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 86400000 });
+
+                return { accessToken: accessToken };
+            }catch (e) {
+                console.error('Error creating user:', e);
+                if (e instanceof Error) {
+                    throw new Error(e.message);
+                }
+                throw new Error('Unexpected error while creating user');
+            }
+
+        },
+
     }
 }
