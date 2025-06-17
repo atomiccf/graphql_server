@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server')
+import { gql } from 'apollo-server'
 
-module.exports = gql`
+export const typeDefs = gql`
   type User {   
     username: String!
     first_name: String!
@@ -8,16 +8,19 @@ module.exports = gql`
     password: String!
     is_active: Boolean!
     is_deleted: Boolean!
+    terms: Boolean!
     _updated_at: String!
     _created_at: String!
     role: String!
   }
   
   input UserInput {
+    email: String!
     username: String!
     password: String!
     first_name: String!
     last_name: String!
+    terms: Boolean!  
   }
   
   input LoginInput {
