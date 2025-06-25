@@ -1,6 +1,6 @@
-import User from 'models/users'
-import { createJWT, createRefreshToken, verifyGoogleToken } from 'service/JWT_service'
-import jwt, {JwtPayload} from 'jsonwebtoken'
+import User from '@models/users.js'
+import { createJWT, createRefreshToken, verifyGoogleToken } from '@service/JWT_service.js'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import crypto from 'crypto'
 
 interface userInput {
@@ -37,7 +37,7 @@ interface GraphQLContext {
     };
 }
 
-export const resolvers = {
+export const userResolvers = {
     Query: {
         async getUser(_:unknown, { id }: { id: string }) {
             try {

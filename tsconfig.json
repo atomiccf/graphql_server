@@ -1,20 +1,24 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 10,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "service/*": ["src/service/*"],
-      "graphql/*": ["src/graphql/*"],
-      "models/*": ["src/models/*"],
-      "configuration/*": ["src/configuration/*"]
+      "@service/*": ["src/service/*"],
+      "@graphql/*": ["src/graphql/*"],
+      "@models/*": ["src/models/*"],
+      "@utils/*": ["src/utils/*"],
+      "@configuration/*": ["src/configuration/*"]
     }
   },
   "ts-node": {
