@@ -39,13 +39,17 @@ interface GraphQLContext {
 
 export const resolvers = {
     Query: {
-        async getUser(_:unknown, { ID }: { ID: string }) {
+        async getUser(_:unknown, { id }: { id: string }) {
             try {
-                return await User.findById(ID)
+                const user = await User.findById(id);
+                if (!user) {
+                    throw new Error("User not found");
+                }
+                return user;
             } catch (e) {
                 console.error("Error get user:", e);
-            }
-
+                throw new Error("Failed to fetch user");
+        }
         },
         async getUsers(_:unknown, { amount }: { amount: number }) {
             try {
