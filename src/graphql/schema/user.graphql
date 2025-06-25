@@ -1,7 +1,4 @@
-const { gql } = require('apollo-server')
-
-export const typeDefs = gql`
-  type User {   
+type User {
     username: String!
     first_name: String!
     last_name: String!
@@ -13,39 +10,39 @@ export const typeDefs = gql`
     _updated_at: String!
     _created_at: String!
     role: String!
-  }
-  
-  input UserInput {
+}
+
+input UserInput {
     username: String!
     password: String!
     first_name: String!
     last_name: String!
     email: String!
     terms: Boolean!
-  }
-  
-  input GoogleAuthInput {
+}
+
+input GoogleAuthInput {
     idToken: String!
-  }
-  
-  input LoginInput {
-      username: String!
-      password: String! 
-  }
-  
-  type Query {
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+type Query {
     getUser(id: ID!): User!
     getUsers(amount: Int): [User]
-  }
-  
-  type Mutation {
+}
+
+type Mutation {
     createUser(userInput: UserInput!): AuthPayload!
     loginUser(loginInput: LoginInput!): AuthPayload!
-    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!  
+    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!
     refreshToken: AuthPayload!
-  }
-  
-  type AuthPayload {
+}
+
+type AuthPayload {
     accessToken: String!
-  }
-`;
+}
+
