@@ -1,46 +1,54 @@
-import express from "express";
-import type {Request, Response} from 'express';
-import {ApolloServer} from 'apollo-server';
-import { initDB } from "service/mongodb_service";
-import cookieParser from "cookie-parser";
-import cors from "cors";
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import { typeDefs } from 'graphql/typeDefs';
-import { resolvers } from 'graphql/resolvers';
+import cookieParser from 'cookie-parser';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
+import { typeDefs } from '@graphql/schema/index.js';
+import { resolvers } from '@graphql/resolvers/index.js';
+import { initDB } from '@service/mongodb_service.js';
 
 dotenv.config();
 
-const PORT: number = Number(process.env.PORT) || 3000;
 const app = express();
+const PORT = Number(process.env.PORT) || 3000;
 
-app.use(
-    cors({
-        origin: 'http://localhost:5173',
-        credentials: true,
-    })
-);
-
+// Middlewares
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(cookieParser());
 
-async function startServer() {
+
+async function startApolloServer() {
+    const httpServer = http.createServer(app);
+
     const server = new ApolloServer({
         typeDefs,
-        resolvers,
-        cors: {
-            origin: 'http://localhost:5173',
-            credentials: true
+        resolvers: {
+            Upload: GraphQLUpload,
+            ...resolvers,
         },
-        context: ({req, res}: { req: Request; res: Response }) => ({req, res})
-    })
 
+    });
 
-    await initDB()
+    await server.start();
+    await initDB();
 
-    server.listen({port: PORT})
-        .then((res) => {
-            console.log(`Server is running on ${res.url}`);
-    })
+    app.use(
+        '/',
+
+        express.json(),
+        graphqlUploadExpress(),
+        expressMiddleware(server, {
+            context: async ({ req, res }) => ({ req, res }),
+        })
+    );
+
+    httpServer.listen(PORT, () => {
+        console.log(`🚀 Server ready at http://localhost:${PORT}/`);
+    });
 }
 
-startServer()
-
+startApolloServer();

@@ -1,4 +1,4 @@
-import {createJWT, createRefreshToken } from "service/JWT_service";
+import { createJWT, createRefreshToken } from "@service/JWT_service.js";
 import { beforeAll, it, describe, expect } from '@jest/globals';
 import jwt from'jsonwebtoken';
 

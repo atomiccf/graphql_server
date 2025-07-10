@@ -1,0 +1,24 @@
+type Task {
+    title: String!
+    description: String!
+    is_completed: Boolean!
+    _created_at: String!
+}
+input TaskInput {
+    userId: String!
+    title: String!
+    date: String!
+    priority: String!
+    description: String!
+    image: Upload
+}
+
+scalar Upload
+
+extend type Query {
+    getAllTasks(userId:String):[Task]
+}
+
+extend type Mutation {
+    addTask(taskInput: TaskInput): String!
+}
