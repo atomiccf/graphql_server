@@ -24,3 +24,5 @@ export const getStoragePath = (): string => {
 export const getMongoUrl = (): string => {
     return config[getEnv()].mongo.url;
 };
+
+

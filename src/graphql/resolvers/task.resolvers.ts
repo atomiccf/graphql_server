@@ -5,9 +5,14 @@ import { taskInput } from "@graphql/types/taskInput.js";
 
 export const taskResolvers = {
     Query: {
-    getAllTasks: ({userId}: {userId: string}) => {
-        if (!userId) return null;
-        const tasks = Task.find({ _created_by: userId });
+    getAllTasks: async (_parent:unknown, { userId }: { userId: string} ) => {
+        console.log('userId_getAllTasks', userId);
+        try {
+            if (!userId) throw new Error('User ID is required');
+            return await Task.find({ _created_by: userId });
+        } catch (error) {
+            throw new Error('Failed to fetch tasks');
+        }
     },
 
     },

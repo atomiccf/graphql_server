@@ -1,6 +1,7 @@
 import { Task } from '@models/tasks.js';
 import { saveUploadedFile } from '@utils/fileUpload.js';
 import type { File } from '@graphql/types/taskInput.js';
+import {createImagePublicUrl} from "@utils/createImagePublicUrl.js";
 
 type CreateTaskParams = {
     title: string;
@@ -26,12 +27,20 @@ export async function createTask({
     }
 
     const imagePath = image ? await saveUploadedFile(image, userId) : null;
+    let publicUrl
+
+    if (imagePath) {
+        publicUrl = createImagePublicUrl(imagePath);
+    }
+
+
 
     const newTask = new Task({
         title,
         description,
         priority,
         image: imagePath,
+        publicUrl: publicUrl,
         _created_by: userId,
         _created_at: new Date(date),
     });
