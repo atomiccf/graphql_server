@@ -1,9 +1,14 @@
 type Task {
+    id: String!
     title: String!
     description: String!
     is_completed: Boolean!
     _created_at: String!
+    priority: String!
+    publicUrl: String!
 }
+
+
 input TaskInput {
     userId: String!
     title: String!
@@ -16,7 +21,8 @@ input TaskInput {
 scalar Upload
 
 extend type Query {
-    getAllTasks(userId:String):[Task]
+    getAllTasks(userId:String!):[Task!]!
+    getImages(userId: String!): [String!]
 }
 
 extend type Mutation {

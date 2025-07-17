@@ -6,6 +6,7 @@ interface ITask {
     is_completed: boolean;
     priority: string;
     image: string;
+    publicUrl: string;
     _created_at: Date;
     _created_by: string;
     _deleted_at: Date;
@@ -28,6 +29,10 @@ const TaskSchema:Schema<ITaskDocument> = new Schema({
     },
 
     image: {
+        type: String,
+    },
+
+    publicUrl: {
         type: String,
     },
 
