@@ -1,14 +1,17 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model, Types } from 'mongoose';
+import { Priority } from "@models/priority.js";
+import {Status} from "@models/status.js";
 
 interface ITask {
     title: string;
     description: string;
     is_completed: boolean;
-    priority: string;
+    priority: Types.ObjectId;
+    status: Types.ObjectId;
     image: string;
     publicUrl: string;
     _created_at: Date;
-    _created_by: string;
+    _created_by: Types.ObjectId;
     _deleted_at: Date;
 }
 
@@ -37,16 +40,22 @@ const TaskSchema:Schema<ITaskDocument> = new Schema({
     },
 
     priority: {
-        type: String,
-        enum: ['low', 'extreme', 'moderate'],
+        type: Schema.Types.ObjectId,
+        ref: 'Priority',
         required: true
+    },
+    status: {
+    type:Schema.Types.ObjectId,
+    ref: 'Status',
+    required: false,
     },
     _created_at: {
         type: Date,
         required: true
     },
     _created_by: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     _deleted_at: {

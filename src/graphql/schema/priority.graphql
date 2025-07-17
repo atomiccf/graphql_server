@@ -1,0 +1,18 @@
+type Priority {
+    name: String!
+    color: String!
+}
+
+input PriorityInput {
+    name: String!
+    color: String!
+}
+
+extend type Query {
+    getAllPriorities: [Priority!]!
+}
+
+extend type Mutation {
+    addPriority(priorityInput: PriorityInput): String!
+}
+

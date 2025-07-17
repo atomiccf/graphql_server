@@ -1,11 +1,27 @@
+scalar ObjectId
+
 type Task {
     id: String!
     title: String!
     description: String!
     is_completed: Boolean!
     _created_at: String!
-    priority: String!
+    status: StatusName!
+    priority: PriorityName!
     publicUrl: String!
+}
+
+
+type StatusName {
+    id: ObjectId!
+    name: String!
+    color: String!
+}
+
+type PriorityName {
+    id: ObjectId!
+    name: String!
+    color: String!
 }
 
 
