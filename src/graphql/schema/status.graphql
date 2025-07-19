@@ -1,0 +1,17 @@
+type Status {
+    name: String!
+    color: String!
+}
+
+input StatusInput {
+    name: String!
+    color: String!
+}
+
+extend type Query {
+    getAllStatus: [Status!]!
+}
+
+extend type Mutation {
+    addStatus(statusInput: StatusInput): String!
+}
