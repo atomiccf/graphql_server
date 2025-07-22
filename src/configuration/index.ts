@@ -1,3 +1,6 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 type Env = 'local' | 'dev' | 'prod' | 'install';
 
 type ConfigType = Record<Env, {
@@ -6,7 +9,10 @@ type ConfigType = Record<Env, {
     blockstorage: string;
 }>;
 
-import rawConfig from './config.json' with { type: 'json' };
+const rawConfig = JSON.parse(
+    readFileSync(join(process.cwd(), 'src/configuration/config.json'), 'utf-8')
+);
+
 const config = rawConfig as ConfigType;
 
 const local_env: Env = 'local';
