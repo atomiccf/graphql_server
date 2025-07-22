@@ -8,7 +8,8 @@ export interface UserData {
 }
 
 function getSecretKey(): string {
-    const secret = process.env.SECRET_KEY;
+    const secret = process.env.JWT_PRIVATE_KEY;
+    console.log('secret', secret);
     if (!secret) {
         throw new Error("SECRET_KEY env variable is not defined");
     }
@@ -18,7 +19,7 @@ function getSecretKey(): string {
 export function createJWT(userData: UserData): string | undefined {
     try {
         const secret = getSecretKey();
-        const accessToken = jwt.sign(userData, secret, { algorithm: 'RS256', expiresIn: '30m' });
+        const accessToken = jwt.sign(userData, secret, { algorithm: 'HS256', expiresIn: '30m' });
         return accessToken;
     } catch (e) {
         console.error("Error generating JWT:", e);
@@ -29,7 +30,7 @@ export function createJWT(userData: UserData): string | undefined {
 export function createRefreshToken(userData: UserData): string | undefined {
     try {
         const secret = getSecretKey();
-        const refreshToken = jwt.sign(userData, secret, { algorithm: 'RS256', expiresIn: '1d' });
+        const refreshToken = jwt.sign(userData, secret, { algorithm: 'HS256', expiresIn: '1d' });
         return refreshToken;
     } catch (e) {
         console.error("Error generating JWT:", e);
