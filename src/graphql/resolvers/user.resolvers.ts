@@ -144,13 +144,18 @@ export const userResolvers = {
         ) {
             try {
                 const { req } = context
-                const refreshToken = req.headers.cookie.split('=')[1];
+                const cookies = req.headers.cookie?.split(';').reduce((acc:Record<string, string>, cookie:string) => {
+                    const [name, value] = cookie.trim().split('=').map(part => part.trim());
+                    return { ...acc, [name]: value };
+                }, {} as Record<string, string>);
+                const refreshToken = cookies.refresh_token;
+                console.log('refreshToken', refreshToken);
 
                 if (!refreshToken) {
                     throw new Error('Refresh token not provided');
                 }
 
-                const userData = jwt.verify(refreshToken, process.env.SECRET_KEY!) as JwtPayload & { username: string; userId: string };
+                const userData = jwt.verify(refreshToken, process.env.JWT_PRIVATE_KEY!, { algorithms: ['HS256'] } ) as JwtPayload & { username: string; userId: string };
                 const newAccessToken:string | undefined = createJWT({ username:userData.username, userId: userData.userId });
 
                 return { accessToken: newAccessToken };

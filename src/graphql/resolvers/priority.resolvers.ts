@@ -1,6 +1,6 @@
 import { Priority } from '@models/priority.js';
-import { createPriority } from "@service/priorityService.js";
-import { PriorityInput } from "@graphql/types/priorityInput.js";
+import { createPriority, deletePriority, updatePriority } from "@service/priorityService.js";
+import {PriorityInput, UpdatePriorityInput} from "@graphql/types/priorityInput.js";
 
 
 export const priorityResolvers = {
@@ -8,25 +8,42 @@ export const priorityResolvers = {
         async getAllPriorities() {
             try {
                 return await Priority.find();
-            }catch (e) {
+            } catch (e) {
                 throw new Error('Failed to fetch priorities');
             }
 
         }
     },
     Mutation: {
-        addPriority: async (_: unknown, { priorityInput }: { priorityInput: PriorityInput }) => {
+        addPriority: async (_: unknown, {priorityInput}: PriorityInput) => {
+            console.log('priorityInput', priorityInput);
             try {
-                const { name, color } = priorityInput.priorityInput;
-                const existingStatus = await Priority.findOne({ name });
-                if (existingStatus) {
-                    throw new Error('Priority already exists');
-                }
-                await createPriority(name, color);
+                const {name, color} = priorityInput;
+                return await createPriority(name, color);
 
             } catch (error) {
-                console.error('Error creating status:', error);
-                throw new Error('Failed to create status');
+                console.error('Error creating priority:', error);
+                throw new Error('Failed to create priority');
+            }
+        },
+
+        updatePriority: async (_: unknown, { updateInput }: UpdatePriorityInput) => {
+            try {
+
+                const {_id, name, color} = updateInput;
+                return await updatePriority(_id , name, color);
+            } catch (error) {
+                console.error('Error creating priority:', error);
+                throw new Error('Failed to update priority');
+            }
+        },
+
+        deletePriority: async (_: unknown, { _id }: { _id: string }) => {
+            try {
+                return await deletePriority(_id);
+            } catch (error) {
+                console.error('Error creating priority:', error);
+                throw new Error('Failed to delete priority');
             }
         }
     }

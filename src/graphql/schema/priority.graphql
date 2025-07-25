@@ -1,6 +1,8 @@
 type Priority {
+    _id: String!
     name: String!
     color: String!
+    is_deleted: Boolean!
 }
 
 input PriorityInput {
@@ -8,11 +10,23 @@ input PriorityInput {
     color: String!
 }
 
+input UpdatePriorityInput {
+    _id: String!
+    name: String
+    color: String
+}
+
+input DeletePriorityInput {
+    _id: String!
+}
+
 extend type Query {
     getAllPriorities: [Priority!]!
 }
 
 extend type Mutation {
-    addPriority(priorityInput: PriorityInput): String!
+    addPriority(priorityInput: PriorityInput!): String!
+    updatePriority(updateInput: UpdatePriorityInput!): String!
+    deletePriority(_id: String!): String!
 }
 

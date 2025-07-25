@@ -4,3 +4,11 @@ export interface PriorityInput {
         color: string;
     }
 }
+
+export interface UpdatePriorityInput {
+    updateInput: {
+        _id: string;
+        name: string;
+        color: string;
+    }
+}

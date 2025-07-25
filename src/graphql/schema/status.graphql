@@ -1,6 +1,8 @@
 type Status {
+    _id: String!
     name: String!
     color: String!
+    is_deleted: Boolean!
 }
 
 input StatusInput {
@@ -8,10 +10,18 @@ input StatusInput {
     color: String!
 }
 
+input UpdateStatusInput {
+    _id: String!
+    name: String
+    color: String
+}
+
 extend type Query {
     getAllStatus: [Status!]!
 }
 
 extend type Mutation {
-    addStatus(statusInput: StatusInput): String!
+    addStatus(statusInput: StatusInput!): String!
+    updateStatus(updateInput: UpdateStatusInput!): String!
+    deleteStatus(_id: String!): String!
 }

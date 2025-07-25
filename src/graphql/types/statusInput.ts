@@ -4,3 +4,11 @@ export interface StatusInput {
         color: string;
     }
 }
+
+export interface UpdateStatusInput {
+    updateInput: {
+        _id: string;
+        name: string;
+        color: string;
+    }
+}
