@@ -21,14 +21,6 @@ input UserInput {
     terms: Boolean!
 }
 
-input GoogleAuthInput {
-    idToken: String!
-}
-
-input LoginInput {
-    username: String!
-    password: String!
-}
 
 type Query {
     getUser(id: ID!): User!
@@ -37,12 +29,8 @@ type Query {
 
 type Mutation {
     createUser(userInput: UserInput!): AuthPayload!
-    loginUser(loginInput: LoginInput!): AuthPayload!
-    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!
-    refreshToken: AuthPayload!
+
 }
 
-type AuthPayload {
-    accessToken: String!
-}
+
 

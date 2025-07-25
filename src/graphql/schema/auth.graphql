@@ -1,0 +1,18 @@
+input GoogleAuthInput {
+    idToken: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+type AuthPayload {
+    accessToken: String!
+}
+
+extend type Mutation {
+    loginUser(loginInput: LoginInput!): AuthPayload!
+    googleAuth(googleAuthInput: GoogleAuthInput!): AuthPayload!
+    refreshToken: AuthPayload!
+}
