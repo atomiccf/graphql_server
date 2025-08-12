@@ -10,9 +10,11 @@ interface ITask {
     status: Types.ObjectId;
     image: string;
     publicUrl: string;
+    is_deleted: boolean;
     _created_at: Date;
     _created_by: Types.ObjectId;
     _deleted_at: Date;
+    _updated_at: Date;
 }
 
 export interface ITaskDocument extends ITask, Document {}
@@ -49,6 +51,7 @@ const TaskSchema:Schema<ITaskDocument> = new Schema({
     ref: 'Status',
     required: false,
     },
+    is_deleted: { type: Boolean, default: false, required: true, },
     _created_at: {
         type: Date,
         required: true
@@ -59,6 +62,9 @@ const TaskSchema:Schema<ITaskDocument> = new Schema({
         required: true
     },
     _deleted_at: {
+        type: Date,
+    },
+    _updated_at: {
         type: Date,
     }
 });
