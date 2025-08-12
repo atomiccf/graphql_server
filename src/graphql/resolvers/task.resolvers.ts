@@ -1,6 +1,6 @@
 import { Task } from "@models/tasks.js";
-import { createTask } from "@service/taskService.js";
-import { taskInput } from "@graphql/types/taskInput.js";
+import {createTask, deleteTask, updateTask} from "@service/taskService.js";
+import {taskInput, taskUpdateInput} from "@graphql/types/taskInput.js";
 
 
 export const taskResolvers = {
@@ -44,5 +44,25 @@ export const taskResolvers = {
                 throw new Error('Failed to create task');
             }
         },
+
+        updateTask: async (_: unknown, { taskUpdateInput }: taskUpdateInput) => {
+            try {
+                console.log('taskUpdateInput', taskUpdateInput);
+                return await updateTask(taskUpdateInput);
+            } catch (err) {
+                console.error('Error updating task:', err);
+                throw new Error('Failed to update task');
+            }
+        },
+
+        deleteTask: async (_: unknown, { taskId }: { taskId: string }) => {
+            try {
+                console.log('deleteTask', taskId);
+                return await deleteTask(taskId);
+            } catch (err) {
+                console.error('Error deleting task:', err);
+                throw new Error('Failed to delete task');
+            }
+        }
     }
 }

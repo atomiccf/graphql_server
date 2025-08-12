@@ -17,3 +17,15 @@ export type taskInput = {
         image: FilePromise
     }
 }
+
+export type taskUpdateInput = {
+    taskUpdateInput: {
+        taskId: string,
+        title: string,
+        description: string,
+        date: string,
+        priority: string,
+        userId: string,
+        image: FilePromise
+    }
+}

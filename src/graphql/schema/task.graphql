@@ -5,6 +5,7 @@ type Task {
     title: String!
     description: String!
     is_completed: Boolean!
+    is_deleted: Boolean!
     _created_at: String!
     status: StatusName!
     priority: PriorityName!
@@ -34,6 +35,16 @@ input TaskInput {
     image: Upload
 }
 
+input TaskUpdateInput {
+    taskId: String!
+    userId: String!
+    title: String!
+    date: String!
+    priority: String!
+    description: String!
+    image: Upload
+}
+
 scalar Upload
 
 extend type Query {
@@ -43,4 +54,6 @@ extend type Query {
 
 extend type Mutation {
     addTask(taskInput: TaskInput): String!
+    updateTask(taskUpdateInput: TaskUpdateInput!): String!
+    deleteTask(taskId: String!): String!
 }
