@@ -9,7 +9,7 @@ type Task {
     _created_at: String!
     status: StatusName!
     priority: PriorityName!
-    publicUrl: String!
+    publicUrl: String
 }
 
 
@@ -45,6 +45,16 @@ input TaskUpdateInput {
     image: Upload
 }
 
+input StatusUpdateInput {
+    taskId: String!
+    statusId: String!
+}
+
+input PriorityUpdateInput {
+    taskId: String!
+    priorityId: String!
+}
+
 scalar Upload
 
 extend type Query {
@@ -56,4 +66,6 @@ extend type Mutation {
     addTask(taskInput: TaskInput): String!
     updateTask(taskUpdateInput: TaskUpdateInput!): String!
     deleteTask(taskId: String!): String!
+    updateTaskStatus(taskUpdateStatusInput: StatusUpdateInput!): String!
+    updateTaskPriority(taskUpdatePriorityInput: PriorityUpdateInput!): String!
 }

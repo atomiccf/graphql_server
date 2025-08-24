@@ -6,6 +6,7 @@ interface IUser {
     first_name: string;
     last_name: string;
     password: string;
+    salt: string;
     is_active: boolean;
     is_deleted: boolean;
     terms: boolean;
@@ -35,6 +36,10 @@ const UserSchema:Schema<IUserDocument> = new Schema({
         required: true
     },
     password: {
+        type: String,
+        required: true
+    },
+    salt: {
         type: String,
         required: true
     },

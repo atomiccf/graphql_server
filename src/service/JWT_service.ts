@@ -9,10 +9,10 @@ export interface UserData {
 
 function getSecretKey(): string {
     const secret = process.env.JWT_PRIVATE_KEY;
-    console.log('secret', secret);
     if (!secret) {
         throw new Error("SECRET_KEY env variable is not defined");
     }
+
     return secret.trim().replace(/\\n/g, '\n');
 }
 

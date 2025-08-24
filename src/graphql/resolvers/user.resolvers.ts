@@ -1,5 +1,6 @@
 import User from '@models/users.js'
 import { createJWT, createRefreshToken } from '@service/JWT_service.js'
+import {hashPassword} from "@utils/password_utils.js";
 
 
 interface userInput {
@@ -65,11 +66,12 @@ export const userResolvers = {
                 if (existingUser) {
                     throw new Error('Username already exists');
                 }
-
+                const {salt, hashed } = await hashPassword(password,);
                 const newUser = new User({
                     email,
                     username,
-                    password,
+                    password:hashed,
+                    salt,
                     first_name,
                     last_name,
                     terms,
@@ -100,7 +102,5 @@ export const userResolvers = {
                 }
             }
         },
-
-
     }
 }

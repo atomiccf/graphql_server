@@ -2,7 +2,6 @@ type User {
     username: String!
     first_name: String!
     last_name: String!
-    password: String!
     email: String!
     terms: Boolean!
     is_active: Boolean!

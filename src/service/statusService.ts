@@ -23,12 +23,13 @@ export async function updateStatus( _id: string, name: string, color: string ): 
             throw new Error('Status not found');
         }
 
-        if (!name && !color) {
+        if (name === undefined && color === undefined) {
             return 'Nothing to update';
         }
 
         if (name !== undefined) existingStatus.name = name;
         if (color !== undefined) existingStatus.color = color;
+
         await existingStatus.save();
         return 'Status updated successfully';
     } catch (error) {
