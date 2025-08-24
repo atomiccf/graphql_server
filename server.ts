@@ -3,16 +3,17 @@ import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
+import depthLimit from 'graphql-depth-limit';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
-import depthLimit from 'graphql-depth-limit';
-import GraphQLUpload from "graphql-upload/GraphQLUpload.mjs";
 import { typeDefs } from '@graphql/schema/index.js';
 import { resolvers } from '@graphql/resolvers/index.js';
 import { initDB } from '@service/mongodb_service.js';
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -24,7 +25,6 @@ const PORT = Number(process.env.PORT) || 3000;
 // Middlewares
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(cookieParser());
-
 app.use('/storage', express.static(__dirname + '/mnt/storage'));
 
 

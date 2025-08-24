@@ -2,6 +2,7 @@ import User from "@models/users.js";
 import { createJWT, createRefreshToken, verifyGoogleToken } from '@service/JWT_service.js'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import crypto from 'crypto'
+import {hashPassword, verifyPassword} from "@utils/password_utils.js";
 
 interface googleAuthInput {
     idToken: string
@@ -35,14 +36,21 @@ export const authResolvers = {
                         { loginInput }: { loginInput: loginInput },
                         context:AuthGraphQLContext
         ) {
-            const { username } = loginInput;
+            const { username, password } = loginInput;
             const { res } = context;
 
             try {
-                const findUser = await User.findOne({ username: username});
+                const findUser = await User.findOne({ username });
 
                 if (!findUser) {
-                    throw new Error('Invalid credentials');
+                    throw new Error("Invalid credentials");
+                }
+
+
+                const isValid = verifyPassword(password, findUser.password, findUser.salt);
+
+                if (!isValid) {
+                    throw new Error("Invalid credentials");
                 }
 
                 const accessToken:string | undefined = createJWT({ username, userId: findUser._id } as { username: string; userId: string });
@@ -72,7 +80,6 @@ export const authResolvers = {
                     return { ...acc, [name]: value };
                 }, {} as Record<string, string>);
                 const refreshToken = cookies.refresh_token;
-                console.log('refreshToken', refreshToken);
 
                 if (!refreshToken) {
                     throw new Error('Refresh token not provided');
@@ -105,9 +112,11 @@ export const authResolvers = {
                 let existingUser = await User.findOne({ username: user.sub });
                 if(!existingUser){
                     const generatedPassword = crypto.randomBytes(32).toString('hex');
+                    const {salt, hashed } = hashPassword(generatedPassword);
                     const newUser = new User({
                         username:user.sub,
-                        password:generatedPassword,
+                        password:hashed,
+                        salt,
                         email: user.email,
                         first_name:first_name,
                         last_name:last_name,

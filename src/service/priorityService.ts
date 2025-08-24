@@ -25,7 +25,7 @@ export async function updatePriority(_id: string, name: string, color: string): 
             throw new Error('Priority not found');
         }
 
-        if (!name && !color) {
+        if (name === undefined && color === undefined) {
             return 'Nothing to update';
         }
 

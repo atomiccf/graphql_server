@@ -29,3 +29,13 @@ export type taskUpdateInput = {
         image: FilePromise
     }
 }
+
+export type TaskUpdateStatusInput = {
+        taskId: string,
+        statusId: string
+}
+
+export type TaskUpdatePriorityInput = {
+        taskId: string,
+        priorityId: string,
+}
