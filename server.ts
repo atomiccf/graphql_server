@@ -13,14 +13,14 @@ import { resolvers } from '@graphql/resolvers/index.js';
 import { initDB } from '@service/mongodb_service.js';
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
-
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+
+dotenv.config({ path: resolve(__dirname, '.env') });
 
 // Middlewares
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
