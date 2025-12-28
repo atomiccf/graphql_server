@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 type Env = 'local' | 'dev' | 'prod' | 'install';
 
@@ -9,12 +10,12 @@ type ConfigType = Record<Env, {
     blockstorage: string;
 }>;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const rawConfig = JSON.parse(
-    readFileSync(join(process.cwd(), 'src/configuration/config.json'), 'utf-8')
+    readFileSync(join(__dirname, 'config.json'), 'utf-8')
 );
-
 const config = rawConfig as ConfigType;
-
 const local_env: Env = 'local';
 const ENV: Env[] = ['local', 'dev', 'prod', 'install'];
 
